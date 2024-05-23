@@ -1,0 +1,78 @@
+<template>
+    <lightning-card title="PD1 Calculator" class="slds-grid slds-grid_align-center">
+        <!-- Process -->
+        <lightning-button variant="brand" label="Calculate" slot="actions" onclick={calculateScore}></lightning-button>
+        <!-- Input information -->
+        <div class="slds-var-p-horizontal_medium">
+            <lightning-input 
+                type="number" 
+                name="devFundamentals" 
+                label="Developer Fundamentals 23%" 
+                value={devFundamentalsScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="processAutomation" 
+                label="Process Automation and Logic 30%" 
+                value={processAutomationScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="userInterface" 
+                label="User Interface 25%" 
+                value={userInterfaceScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="testDebugDeploy" 
+                label="Testing, Debugging, and Deployment 22%" 
+                value={testDebugDeployScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+        </div>
+        <!-- Display results -->
+        <div slot="footer">
+            <h1 class="slds-text-heading_large">Certification Exam Results</h1>
+            <p class="slds-var-p-horizontal_large">Certification Score: {certificationScore}%</p>
+            <div>
+                <h1 class="slds-text-heading_large">Previous Attempts</h1>
+                <ul for:each={attemptHistory} for:item="attempt" key={attempt.Id}>
+                    <li>Attempt: {attempt.Id}, Score: {attempt.Score}%</li>
+                </ul>
+            </div>
+            <template lwc:if={showResources}>
+                <p>Unfortunately, you did not make the passing score... Keep learning!</p>
+                <lightning-vertical-navigation-section label="Resources">
+                    <lightning-vertical-navigation-item
+                        label="PD1 Exam Guide"
+                        name="pdexamguide"
+                        href="https://trailhead.salesforce.com/content/learn/trails/platform-developer-i-certification-study-guide">
+                    </lightning-vertical-navigation-item>
+                    <lightning-vertical-navigation-item
+                        label="Focus on Force"
+                        name="focusonforce"
+                        href="https://focusonforce.com/salesforce-platform-developer-1-certification-practice-exams/">
+                    </lightning-vertical-navigation-item>
+                    <lightning-vertical-navigation-item
+                        label="Salesforce Mentor"
+                        name="salesforcementor"
+                        href="https://courses.salesforcementor.com/p/salesforce-development-apex-fundamentals">
+                    </lightning-vertical-navigation-item>
+                </lightning-vertical-navigation-section>
+            </template>
+            <template lwc:if={passExam}>
+                <p>Congratulations, YOU PASSED!</p>
+            </template>
+            <template lwc:else>
+                <p>Press Calculate to see your score.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>
