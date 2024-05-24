@@ -8,23 +8,22 @@ const passingScore = 68;
 export default class PlatformDevCertCalculator extends LightningElement {
     
     maxFieldValue = 100;
+    isFieldValueTooHigh = false;
     devFundamentalsScore = 50;
     processAutomationScore = 50;
     userInterfaceScore = 50;
     testDebugDeployScore = 50;
     certificationScore = 90;
+    numberOfQuestions = 60;
 
     showResources = false;
     passExam = false;
-    attemptHistory = [
-        {Id: 1, Score: 50}, 
-        {Id: 2, Score: 60}, 
-        {Id: 3, Score: 70}
-    ];
+    attemptHistory = [];
+    currentHistoryId = 0;
 
     handleChange(event) {
-        // TODO: Add Validity checking
         let value = Number(event.target.value);
+        this.isFieldValueTooHigh = value > this.maxFieldValue;
         switch (event.target.name) {
             case 'devFundamentals':
                 this.devFundamentalsScore = value;
@@ -42,13 +41,15 @@ export default class PlatformDevCertCalculator extends LightningElement {
     }
 
     calculateScore() {
-        let devFundWeightedScore = this.devFundamentalsScore * devFundamentalsWeight;
-        let procAutomWeightedScore = this.processAutomationScore * processAutomationWeight;
-        let userIntWeightedScore = this.userInterfaceScore * userInterfaceWeight;
-        let testDebWeightedScore = this.testDebugDeployScore * testDebugDeployWeight;
-        this.certificationScore = devFundWeightedScore + procAutomWeightedScore + userIntWeightedScore + testDebWeightedScore;
-        this.showResourcesIfFailed();
-        this.addAttemptHistory();
+        if (!this.isFieldValueTooHigh) {
+            let devFundWeightedScore = this.devFundamentalsScore * devFundamentalsWeight;
+            let procAutomWeightedScore = this.processAutomationScore * processAutomationWeight;
+            let userIntWeightedScore = this.userInterfaceScore * userInterfaceWeight;
+            let testDebWeightedScore = this.testDebugDeployScore * testDebugDeployWeight;
+            this.certificationScore = Math.round(devFundWeightedScore + procAutomWeightedScore + userIntWeightedScore + testDebWeightedScore);
+            this.showResourcesIfFailed();
+            this.addAttemptHistory(this.certificationScore);
+        }
     }
 
     showResourcesIfFailed() {
@@ -56,16 +57,25 @@ export default class PlatformDevCertCalculator extends LightningElement {
             this.showResources = true;
         } else {
             this.showResources = false;
-            this.passExam = true;
         }
+        this.passExam = !this.showResources;
     }
 
-    addAttemptHistory() {
-        this.attemptHistory.push(
-            {
-                Id: 4,
-                Score: this.certificationScore
-            }
-        );
+    addAttemptHistory(Score) {
+        this.currentHistoryId++;
+        const attempt = {
+            Id: this.currentHistoryId,
+            Score
+        };
+        this.attemptHistory = [...this.attemptHistory, attempt];
+    }
+
+    deleteAttemptHandler(event) {
+        let attemptId = event.detail;
+        this.attemptHistory = this.attemptHistory.filter(attempt => attempt.Id != attemptId);
+    }
+
+    connectedCallback() {
+        this.currentHistoryId = this.attemptHistory.length;
     }
 }

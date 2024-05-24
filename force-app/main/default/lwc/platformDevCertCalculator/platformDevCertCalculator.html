@@ -39,16 +39,30 @@
         </div>
         <!-- Display results -->
         <div slot="footer">
-            <h1 class="slds-text-heading_large">Certification Exam Results</h1>
-            <p class="slds-var-p-horizontal_large">Certification Score: {certificationScore}%</p>
+            <h1 class="slds-text-heading_large">Certification Exam Result</h1>
+            <div class="slds-text-heading_small">Certification Score: {certificationScore}%</div>
+            <template lwc:if={passExam}>
+                <div class="slds-text-color_success">Congratulations, YOU PASSED!</div>
+            </template>
+            <template lwc:elseif={showResources}>
+                <div class="slds-text-color_destructive">Unfortunately, you did not make the passing score...</div>
+            </template>
             <div>
-                <h1 class="slds-text-heading_large">Previous Attempts</h1>
-                <ul for:each={attemptHistory} for:item="attempt" key={attempt.Id}>
-                    <li>Attempt: {attempt.Id}, Score: {attempt.Score}%</li>
-                </ul>
+                <h1 class="slds-text-heading_large">Previous Attempt</h1>
+                <lightning-tabset variant="scoped">
+                    <template for:each={attemptHistory} for:item="attempt">
+                        <lightning-tab label={attempt.Id} key={attempt.Id} value={attempt.Id}>
+                            <c-score-information
+                                score={attempt.Score}
+                                attempt-id={attempt.Id}
+                                number-of-questions={numberOfQuestions}
+                                ondeleteattempt={deleteAttemptHandler}
+                            ></c-score-information>
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset>
             </div>
             <template lwc:if={showResources}>
-                <p>Unfortunately, you did not make the passing score... Keep learning!</p>
                 <lightning-vertical-navigation-section label="Resources">
                     <lightning-vertical-navigation-item
                         label="PD1 Exam Guide"
@@ -66,9 +80,6 @@
                         href="https://courses.salesforcementor.com/p/salesforce-development-apex-fundamentals">
                     </lightning-vertical-navigation-item>
                 </lightning-vertical-navigation-section>
-            </template>
-            <template lwc:if={passExam}>
-                <p>Congratulations, YOU PASSED!</p>
             </template>
             <template lwc:else>
                 <p>Press Calculate to see your score.</p>
