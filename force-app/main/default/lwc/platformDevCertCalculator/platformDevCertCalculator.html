@@ -1,0 +1,92 @@
+<template>
+    <lightning-card title="PD1 Calculator" class="slds-grid slds-grid_align-center">
+        <!-- Process -->
+        <template lwc:if={isFieldValueTooHigh}>
+            <lightning-button variant="brand" label="Calculate" slot="actions" disabled class="slds-var-m-left_x-small"></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button variant="brand" label="Calculate" slot="actions" onclick={calculateScore}></lightning-button>
+        </template>
+        <!-- Input information -->
+        <div class="slds-var-p-horizontal_medium">
+            <lightning-input 
+                type="number" 
+                name="devFundamentals" 
+                label="Developer Fundamentals 23%" 
+                value={devFundamentalsScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="processAutomation" 
+                label="Process Automation and Logic 30%" 
+                value={processAutomationScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="userInterface" 
+                label="User Interface 25%" 
+                value={userInterfaceScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+            <lightning-input 
+                type="number" 
+                name="testDebugDeploy" 
+                label="Testing, Debugging, and Deployment 22%" 
+                value={testDebugDeployScore} 
+                max={maxFieldValue}
+                onchange={handleChange}
+            ></lightning-input>
+        </div>
+        <!-- Display results -->
+        <div slot="footer">
+            <h1 class="slds-text-heading_large">Certification Exam Result</h1>
+            <div class="slds-text-heading_small">Certification Score: <span class={scoreClass}>{certificationScore}%</span></div>
+            <template lwc:if={passExam}>
+                <div class="slds-text-color_success">Congratulations, YOU PASSED!</div>
+            </template>
+            <template lwc:elseif={showResources}>
+                <div class="slds-text-color_destructive">Unfortunately, you did not make the passing score...</div>
+            </template>
+            <div>
+                <h1 class="slds-text-heading_large">Previous Attempt</h1>
+                <lightning-tabset variant="scoped">
+                    <template for:each={attemptHistory} for:item="attempt">
+                        <lightning-tab label={attempt.Id} key={attempt.Id} value={attempt.Id}>
+                            <c-score-information
+                                score={attempt.Score}
+                                attempt-id={attempt.Id}
+                                number-of-questions={numberOfQuestions}
+                                ondeleteattempt={deleteAttemptHandler}
+                            ></c-score-information>
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset>
+            </div>
+            <template lwc:if={showResources}>
+                <lightning-vertical-navigation-section label="Resources">
+                    <lightning-vertical-navigation-item
+                        label="PD1 Exam Guide"
+                        name="pdexamguide"
+                        href="https://trailhead.salesforce.com/content/learn/trails/platform-developer-i-certification-study-guide">
+                    </lightning-vertical-navigation-item>
+                    <lightning-vertical-navigation-item
+                        label="Focus on Force"
+                        name="focusonforce"
+                        href="https://focusonforce.com/salesforce-platform-developer-1-certification-practice-exams/">
+                    </lightning-vertical-navigation-item>
+                    <lightning-vertical-navigation-item
+                        label="Salesforce Mentor"
+                        name="salesforcementor"
+                        href="https://courses.salesforcementor.com/p/salesforce-development-apex-fundamentals">
+                    </lightning-vertical-navigation-item>
+                </lightning-vertical-navigation-section>
+            </template>
+            <p>Press <strong>Calculate</strong> to see your score. Max field value: {maxFieldValue}</p>
+        </div>
+    </lightning-card>
+</template>

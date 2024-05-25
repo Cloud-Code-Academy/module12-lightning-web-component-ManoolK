@@ -1,0 +1,33 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item padding="around-small">
+            <div class="header-column">
+                <p class="field-title" title="Score">Score</p>
+                <p>{score}%</p>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small">
+            <div class="header-column">
+                <p class="field-title" title="Score">Correct Questions</p>
+                <p>{numberOfQuestionsCorrect}</p>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small">
+            <div class="header-column">
+                <p class="field-title" title="Score">Incorrect Questions</p>
+                <p>{numberOfQuestionsIncorrect}</p>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-small">
+            <div class="header-column">
+                <lightning-button-icon 
+                    icon-name="utility:delete" 
+                    alternative-text="Delete" 
+                    class="slds-m-left_xx-small" 
+                    title="Delete"
+                    onclick={handleDeleteAttempt}
+                ></lightning-button-icon>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
