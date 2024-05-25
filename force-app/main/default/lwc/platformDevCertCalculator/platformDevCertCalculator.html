@@ -1,7 +1,12 @@
 <template>
     <lightning-card title="PD1 Calculator" class="slds-grid slds-grid_align-center">
         <!-- Process -->
-        <lightning-button variant="brand" label="Calculate" slot="actions" onclick={calculateScore}></lightning-button>
+        <template lwc:if={isFieldValueTooHigh}>
+            <lightning-button variant="brand" label="Calculate" slot="actions" disabled class="slds-var-m-left_x-small"></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button variant="brand" label="Calculate" slot="actions" onclick={calculateScore}></lightning-button>
+        </template>
         <!-- Input information -->
         <div class="slds-var-p-horizontal_medium">
             <lightning-input 
@@ -40,7 +45,7 @@
         <!-- Display results -->
         <div slot="footer">
             <h1 class="slds-text-heading_large">Certification Exam Result</h1>
-            <div class="slds-text-heading_small">Certification Score: {certificationScore}%</div>
+            <div class="slds-text-heading_small">Certification Score: <span class={scoreClass}>{certificationScore}%</span></div>
             <template lwc:if={passExam}>
                 <div class="slds-text-color_success">Congratulations, YOU PASSED!</div>
             </template>
@@ -81,9 +86,7 @@
                     </lightning-vertical-navigation-item>
                 </lightning-vertical-navigation-section>
             </template>
-            <template lwc:else>
-                <p>Press Calculate to see your score.</p>
-            </template>
+            <p>Press <strong>Calculate</strong> to see your score. Max field value: {maxFieldValue}</p>
         </div>
     </lightning-card>
 </template>

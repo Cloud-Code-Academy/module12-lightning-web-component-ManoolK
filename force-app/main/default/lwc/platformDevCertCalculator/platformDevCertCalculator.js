@@ -13,7 +13,7 @@ export default class PlatformDevCertCalculator extends LightningElement {
     processAutomationScore = 50;
     userInterfaceScore = 50;
     testDebugDeployScore = 50;
-    certificationScore = 90;
+    certificationScore = 50;
     numberOfQuestions = 60;
 
     showResources = false;
@@ -21,9 +21,12 @@ export default class PlatformDevCertCalculator extends LightningElement {
     attemptHistory = [];
     currentHistoryId = 0;
 
+    get scoreClass() { 
+        return this.passExam ? 'green-text' : 'red-text';
+    }
+
     handleChange(event) {
         let value = Number(event.target.value);
-        this.isFieldValueTooHigh = value > this.maxFieldValue;
         switch (event.target.name) {
             case 'devFundamentals':
                 this.devFundamentalsScore = value;
@@ -38,6 +41,7 @@ export default class PlatformDevCertCalculator extends LightningElement {
                 this.testDebugDeployScore = value;
                 break;
         }
+        this.valudateFieldValues();
     }
 
     calculateScore() {
@@ -77,5 +81,17 @@ export default class PlatformDevCertCalculator extends LightningElement {
 
     connectedCallback() {
         this.currentHistoryId = this.attemptHistory.length;
+    }
+
+    valudateFieldValues() {
+        if (this.devFundamentalsScore > this.maxFieldValue ||
+            this.processAutomationScore > this.maxFieldValue ||
+            this.userInterfaceScore > this.maxFieldValue ||
+            this.testDebugDeployScore > this.maxFieldValue
+        ) {
+            this.isFieldValueTooHigh = true;
+        } else {
+            this.isFieldValueTooHigh = false;
+        }
     }
 }
